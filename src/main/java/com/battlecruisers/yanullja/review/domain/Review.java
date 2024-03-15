@@ -94,4 +94,8 @@ public class Review extends BaseDate {
         );
     }
 
+    public void changeContent() {
+        this.content = "REVIEW " + Math.random();
+    }
+
 }

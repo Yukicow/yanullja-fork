@@ -65,7 +65,7 @@ public class ReservationService {
      */
     @Transactional
     public ReservationResponseDto reserve(ReservationRequestDto requestDto,
-        Long memberId) {
+        Long memberId) throws InterruptedException {
 
         Long roomId = requestDto.getRoomOptionId();
         Long memberCouponId = requestDto.getMemberCouponId();
@@ -77,13 +77,15 @@ public class ReservationService {
         Room room = validateAndGetRoom(roomId);
 
         // 해당 날짜에 방이 사용 가능한지 확인
-        List<Reservation> reservations = reservationRepository.reservationsInDateRangeByRoomId(
+        List<Reservation> reservations = reservationRepository.reservationsInDateRangeByRoomIdWithLock(
             roomId, startDate, endDate);
         Integer remainingRoomCount =
             room.getTotalRoomCount() - getMaxReservedRoomCount(reservations,
                 room, startDate, endDate);
 
-        if (remainingRoomCount < 0) {
+        log.info("예약 총 개수 : {}", reservations.size());
+
+        if (remainingRoomCount <= 0) {
             throw new NotEnoughTotalRoomCountException();
         }
 
@@ -95,6 +97,8 @@ public class ReservationService {
         // purchase 진행 (쿠폰 계산로직 포함)
         Purchase purchase = purchaseService.purchase(reservation,
             memberCouponId);
+
+        Thread.sleep(500);
 
         return ReservationResponseDto.createReservationResponseDto(reservation,
             purchase);
@@ -122,9 +126,9 @@ public class ReservationService {
     public Integer getMaxReservedRoomCount(List<Reservation> reservations,
         Room room, LocalDate startDate, LocalDate endDate) {
 
-        // 예약이 없는 경우, 전체 객실 수 반환
+        // 예약이 없는 경우 0 반환
         if (reservations == null || reservations.isEmpty()) {
-            return room.getTotalRoomCount();
+            return 0;
         }
 
         // 날짜 별 예약 수 확인

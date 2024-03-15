@@ -59,8 +59,8 @@ public class SpringSecurityConfig {
             (auth) ->
                 auth.requestMatchers("/users")
                     .authenticated()
-                    .requestMatchers("/payment/instant")
-                    .authenticated()
+//                    .requestMatchers("/payment/instant")
+//                    .authenticated()
                     .requestMatchers("/payment/purchase")
                     .authenticated()
                     .requestMatchers(HttpMethod.GET, "/payment")

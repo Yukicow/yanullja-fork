@@ -7,12 +7,16 @@ import com.battlecruisers.yanullja.review.dto.ReviewSampleDto;
 import com.battlecruisers.yanullja.review.dto.ReviewSaveDto;
 import com.battlecruisers.yanullja.review.dto.ReviewSearchCond;
 import com.battlecruisers.yanullja.review.dto.ReviewStatisticsDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor

@@ -16,4 +16,5 @@ public interface CustomReviewRepository {
     ReviewStatisticsDto findReviewStatistics(Long placeId, Long roomId);
 
     ReviewSampleDto findReviewSamples(Long placeId, Long roomId);
+
 }

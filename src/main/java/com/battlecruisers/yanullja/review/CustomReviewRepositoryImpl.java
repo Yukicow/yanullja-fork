@@ -101,29 +101,18 @@ public class CustomReviewRepositoryImpl implements CustomReviewRepository {
     public ReviewStatisticsDto findReviewStatistics(Long placeId, Long roomId) {
         List<Tuple> tuples = query
             .select(
-                select(review.count())
-                    .from(review)
-                    .where(review.place.id.eq(placeId)),
-                select(review.totalRate.avg())
-                    .from(review)
-                    .where(review.place.id.eq(placeId)),
-                select(review.cleanlinessRate.avg())
-                    .from(review)
-                    .where(review.place.id.eq(placeId)),
-                select(review.convenienceRate.avg())
-                    .from(review)
-                    .where(review.place.id.eq(placeId)),
-                select(review.kindnessRate.avg())
-                    .from(review)
-                    .where(review.place.id.eq(placeId)),
-                select(review.locationRate.avg())
-                    .from(review)
-                    .where(review.place.id.eq(placeId))
+                review.count(),
+                review.totalRate.avg(),
+                review.cleanlinessRate.avg(),
+                review.convenienceRate.avg(),
+                review.kindnessRate.avg(),
+                review.locationRate.avg()
             )
             .from(review)
             .where(
                 review.place.id.eq(placeId)
             )
+            .groupBy(review.place.id)
             .fetch();
 
         if (tuples.size() == 0) {
